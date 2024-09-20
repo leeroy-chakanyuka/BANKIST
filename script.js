@@ -63,6 +63,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 function displayMovements(movements) {
   //movements would be an array!
+  containerMovements.innerHTML = '';
   movements.forEach(function (movement, index) {
     let transactiontype;
     movement < 0
@@ -73,10 +74,12 @@ function displayMovements(movements) {
     <div class="movements__row">
           <div class="movements__type movements__type--${transactiontype}">${
       index + 1
-    }</div>
+    } ${transactiontype}</div>
           <div class="movements__date">3 days ago</div>
-          <div class="movements__value">${movement}€</div>
+          <div class="movements__value">R${movement}</div>
     `;
+
+    containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 }
 displayMovements(account1.movements);
