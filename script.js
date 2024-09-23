@@ -84,6 +84,18 @@ function displayMovements(movements) {
 }
 displayMovements(account1.movements);
 
+function userNames(user) {
+  const username = user.toLowerCase();
+  const myUser = username.split(' ');
+  const final = myUser.map(function (name) {
+    return name[0];
+  });
+  const ans = final.join(''); // ensures that the initial is joined by nothing!
+  return ans;
+}
+
+console.log(userNames(account1.owner));
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
