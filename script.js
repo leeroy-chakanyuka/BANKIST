@@ -114,6 +114,10 @@ function printBal(account) {
 
 console.log(printBal(account1.movements));
 
+// const maxValue = account1.movements.reduce(function (acc, value) {
+//   return (acc = value > acc ? value : acc);
+// }, 0);
+// console.log(maxValue);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
