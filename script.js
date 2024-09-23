@@ -96,7 +96,16 @@ function userNames(user) {
 }
 
 console.log(userNames(account1.owner));
+const deposits = account1.movements.filter(function (movement) {
+  return movement > 0;
+});
+console.log(deposits);
+const withdrawals = account1.movements.filter(function (movement) {
+  return movement < 0;
+});
+console.log(withdrawals);
 
+const balance = account1.reduce(function () {});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
