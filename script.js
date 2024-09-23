@@ -105,7 +105,15 @@ const withdrawals = account1.movements.filter(function (movement) {
 });
 console.log(withdrawals);
 
-const balance = account1.reduce(function () {});
+function printBal(account) {
+  const balance = account.reduce(function (acc, curr, i, arr) {
+    return (acc += curr);
+  }, 0);
+  labelBalance.innerHTML = `R${balance}`;
+}
+
+console.log(printBal(account1.movements));
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
