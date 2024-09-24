@@ -84,18 +84,21 @@ function displayMovements(movements) {
 }
 displayMovements(account1.movements);
 
-function userNames(user) {
-  const username = user
-    .toLowerCase()
-    .split(' ')
-    .map(function (name) {
-      return name[0];
-    });
-  const ans = username.join(''); // ensures that the initial is joined by nothing
-  return ans;
-}
+const createUsernames = function (accs) {
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(function (name) {
+        return name[0];
+      })
+      .join(''); // No spaces between initials
+  });
+};
 
-console.log(userNames(account1.owner));
+createUsernames(accounts);
+console.log(accounts);
+
 const deposits = account1.movements.filter(function (movement) {
   return movement > 0;
 });
@@ -152,19 +155,16 @@ function totalIncome(arr) {
 
 totalIncome(account1.movements);
 
-// const maxValue = account1.movements.reduce(function (acc, value) {
-//   return (acc = value > acc ? value : acc);
-// }, 0);
-// console.log(maxValue);
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
+// EVENT LISTENERS!
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
+let currentAcc;
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault(); //this is actually connected to the global window
+  currentAcc = accounts.find(acc => acc.username === inputLoginUsername.value);
+  console.log(currentAcc); // stores the username here and its assumed you're this acc now
+  //go through the accounts array, find the element with the property value that matches what was entered
+  // if(currentAcc.pin === )
+});
 
 /////////////////////////////////////////////////
