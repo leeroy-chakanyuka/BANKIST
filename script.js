@@ -134,8 +134,18 @@ function totalIncome(arr) {
     .filter(function (v, i, a) {
       return v > 0;
     })
-    .reduce(function (a, v, i, ar) {
-      return (a += v * (1.2 / 100));
+    .map(function (a, v, i) {
+      let interest = 0;
+      return (interest += a * (1.2 / 100));
+    }, 0)
+    .reduce(function (ac, v, i, ar) {
+      let val = 0;
+      if (v >= 1) {
+        val = v;
+      } else {
+        val = 0;
+      }
+      return (ac += val);
     }, 0);
   labelSumInterest.innerHTML = `R${Interest}`;
 }
