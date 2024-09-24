@@ -109,10 +109,38 @@ function printBal(account) {
   const balance = account.reduce(function (acc, curr, i, arr) {
     return (acc += curr);
   }, 0);
-  labelBalance.innerHTML = `R${balance}`;
+  labelBalance.innerHTML = `R${balance}`; //logs nothing to the console, instead we print bal
+}
+printBal(account1.movements);
+
+function totalIncome(arr) {
+  const income = arr
+    .filter(function (v, i, a) {
+      return v > 0;
+    })
+    .reduce(function (a, v, i, ar) {
+      return (a += v);
+    }, 0);
+  const out = arr
+    .filter(function (v, i, a) {
+      return v < 0;
+    })
+    .reduce(function (a, v, i, ar) {
+      return (a += Math.abs(v));
+    }, 0);
+  labelSumOut.innerHTML = `R${out}`;
+  labelSumIn.innerHTML = `R${income}`;
+  const Interest = arr
+    .filter(function (v, i, a) {
+      return v > 0;
+    })
+    .reduce(function (a, v, i, ar) {
+      return (a += v * (1.2 / 100));
+    }, 0);
+  labelSumInterest.innerHTML = `R${Interest}`;
 }
 
-console.log(printBal(account1.movements));
+totalIncome(account1.movements);
 
 // const maxValue = account1.movements.reduce(function (acc, value) {
 //   return (acc = value > acc ? value : acc);
