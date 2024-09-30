@@ -6,7 +6,7 @@
 
 // Data
 const account1 = {
-  owner: 'Jonas Schmedtmann',
+  owner: 'Leeroy Chakanyuka',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
@@ -60,10 +60,10 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
-
+containerMovements.innerHTML = '';
 function displayMovements(movements) {
   //movements would be an array!
-  containerMovements.innerHTML = '';
+
   movements.forEach(function (movement, index) {
     let transactiontype;
     movement < 0
@@ -82,7 +82,6 @@ function displayMovements(movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 }
-displayMovements(account1.movements);
 
 const createUsernames = function (accs) {
   accs.forEach(function (acc) {
@@ -95,18 +94,15 @@ const createUsernames = function (accs) {
       .join(''); // No spaces between initials
   });
 };
-
 createUsernames(accounts);
-console.log(accounts);
 
 const deposits = account1.movements.filter(function (movement) {
   return movement > 0;
 });
-console.log(deposits);
+
 const withdrawals = account1.movements.filter(function (movement) {
   return movement < 0;
 });
-console.log(withdrawals);
 
 function printBal(account) {
   const balance = account.reduce(function (acc, curr, i, arr) {
@@ -114,17 +110,16 @@ function printBal(account) {
   }, 0);
   labelBalance.innerHTML = `R${balance}`; //logs nothing to the console, instead we print bal
 }
-printBal(account1.movements);
 
-function totalIncome(arr) {
-  const income = arr
+function totalIncome(account) {
+  const income = account.movements
     .filter(function (v, i, a) {
       return v > 0;
     })
     .reduce(function (a, v, i, ar) {
       return (a += v);
     }, 0);
-  const out = arr
+  const out = account.movements
     .filter(function (v, i, a) {
       return v < 0;
     })
@@ -133,13 +128,13 @@ function totalIncome(arr) {
     }, 0);
   labelSumOut.innerHTML = `R${out}`;
   labelSumIn.innerHTML = `R${income}`;
-  const Interest = arr
+  const Interest = account.movements
     .filter(function (v, i, a) {
       return v > 0;
     })
     .map(function (a, v, i) {
       let interest = 0;
-      return (interest += a * (1.2 / 100));
+      return (interest += a * (account.interestRate / 100));
     }, 0)
     .reduce(function (ac, v, i, ar) {
       let val = 0;
@@ -153,8 +148,6 @@ function totalIncome(arr) {
   labelSumInterest.innerHTML = `R${Interest}`;
 }
 
-totalIncome(account1.movements);
-
 // EVENT LISTENERS!
 
 let currentAcc;
@@ -163,8 +156,27 @@ btnLogin.addEventListener('click', function (e) {
   e.preventDefault(); //this is actually connected to the global window
   currentAcc = accounts.find(acc => acc.username === inputLoginUsername.value);
   console.log(currentAcc); // stores the username here and its assumed you're this acc now
+
   //go through the accounts array, find the element with the property value that matches what was entered
-  // if(currentAcc.pin === )
+
+  if (currentAcc?.pin === Number(inputLoginPin.value)) {
+    // HAS TO BE A NUMBER!
+
+    //check if current account exists! (it can only exist if the find method finds your account and stores it in currentAcc)
+    //displaying the account (UI)
+
+    labelWelcome.textContent = `Welcome back, ${currentAcc.owner}`;
+    //goes from "Log in to get started" to
+    containerApp.style.opacity = 100;
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    inputLoginUsername.blur();
+    //Movements
+    displayMovements(currentAcc.movements);
+    //Balances
+    printBal(currentAcc.movements);
+    totalIncome(currentAcc);
+  }
 });
 
 /////////////////////////////////////////////////
