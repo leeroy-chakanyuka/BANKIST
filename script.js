@@ -61,12 +61,13 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 containerMovements.innerHTML = '';
-function displayMovements(movements) {
+
+function displayMovements(account) {
   //movements would be an array!
 
-  movements.forEach(function (movement, index) {
+  account.movements.forEach(function (movement, index) {
     let transactiontype;
-    movement < 0
+    movement > 0
       ? (transactiontype = 'deposit')
       : (transactiontype = 'withdrawal');
 
@@ -76,7 +77,7 @@ function displayMovements(movements) {
       index + 1
     } ${transactiontype}</div>
           <div class="movements__date">3 days ago</div>
-          <div class="movements__value">R${movement}</div>
+          <div class="movements__value">R${Math.abs(movement)}</div>
     `;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -103,23 +104,26 @@ const deposits = account1.movements.filter(function (movement) {
 const withdrawals = account1.movements.filter(function (movement) {
   return movement < 0;
 });
-
+let balance = 0;
 function printBal(account) {
-  const balance = account.reduce(function (acc, curr, i, arr) {
+  balance = account.movements.reduce(function (acc, curr, i, arr) {
     return (acc += curr);
   }, 0);
   labelBalance.innerHTML = `R${balance}`; //logs nothing to the console, instead we print bal
 }
 
+let inc = 0;
+let out = 0;
+
 function totalIncome(account) {
-  const income = account.movements
+  inc = account.movements
     .filter(function (v, i, a) {
       return v > 0;
     })
     .reduce(function (a, v, i, ar) {
       return (a += v);
     }, 0);
-  const out = account.movements
+  out = account.movements
     .filter(function (v, i, a) {
       return v < 0;
     })
@@ -127,7 +131,7 @@ function totalIncome(account) {
       return (a += Math.abs(v));
     }, 0);
   labelSumOut.innerHTML = `R${out}`;
-  labelSumIn.innerHTML = `R${income}`;
+  labelSumIn.innerHTML = `R${inc}`;
   const Interest = account.movements
     .filter(function (v, i, a) {
       return v > 0;
@@ -172,11 +176,29 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginPin.blur();
     inputLoginUsername.blur();
     //Movements
-    displayMovements(currentAcc.movements);
+    displayMovements(currentAcc);
     //Balances
-    printBal(currentAcc.movements);
+    printBal(currentAcc);
     totalIncome(currentAcc);
   }
 });
 
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  let sendTo = accounts.find(acc => acc.username === inputTransferTo.value);
+  if (sendTo != null) {
+    if (balance >= amount) {
+      sendTo.movements.push(amount);
+      currentAcc.movements.push(amount - amount * 2);
+      displayMovements(currentAcc);
+      printBal(currentAcc);
+      totalIncome(currentAcc);
+    } else {
+      alert('you broke nigga');
+    }
+  } else {
+    alert('account does not exist!');
+  }
+});
 /////////////////////////////////////////////////
