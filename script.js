@@ -182,23 +182,63 @@ btnLogin.addEventListener('click', function (e) {
     totalIncome(currentAcc);
   }
 });
-
+function updateUI(acc) {
+  displayMovements(acc);
+  printBal(acc);
+  totalIncome(acc);
+}
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputTransferAmount.value);
   let sendTo = accounts.find(acc => acc.username === inputTransferTo.value);
   if (sendTo != null) {
-    if (balance >= amount) {
-      sendTo.movements.push(amount);
-      currentAcc.movements.push(amount - amount * 2);
-      displayMovements(currentAcc);
-      printBal(currentAcc);
-      totalIncome(currentAcc);
+    if (sendTo !== currentAcc) {
+      if (balance >= amount && amount > 0) {
+        sendTo.movements.push(amount);
+        currentAcc.movements.push(amount - amount * 2);
+        updateUI(currentAcc);
+        inputTransferAmount.value = '';
+        inputTransferTo.value = '';
+      } else {
+        alert('you broke nigga');
+      }
     } else {
-      alert('you broke nigga');
+      alert('you cannot send money to yourself!');
     }
   } else {
     alert('account does not exist!');
   }
 });
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  console.log(currentAcc);
+  if (!currentAcc) {
+    alert('you are not logged in to any account!');
+  }
+  if (
+    currentAcc.username === inputCloseUsername.value &&
+    currentAcc.pin === Number(inputClosePin.value)
+  ) {
+    let ans = prompt(
+      `Are you sure you would like to go through with this, type "YES" to confirm`
+    );
+    if (ans === 'YES') {
+      let ind = accounts.findIndex(function () {
+        return currentAcc.username;
+      });
+      labelWelcome.textContent = `GoodBye, ${currentAcc.owner}`;
+      accounts.splice(ind, 1);
+      console.log(accounts);
+      currentAcc = '';
+      containerApp.style.opacity = 0;
+      labelWelcome.textContent = `Login to get started`;
+      inputClosePin.value = '';
+      inputCloseUsername.value = '';
+    }
+  } else {
+    alert('Wrong password or username, please try again!');
+  }
+});
+
 /////////////////////////////////////////////////
