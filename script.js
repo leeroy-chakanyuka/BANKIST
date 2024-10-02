@@ -210,6 +210,21 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const loan = Number(inputLoanAmount.value);
+  const canGetLoan = currentAcc.movements.some(function (v) {
+    return v >= loan * 0.1;
+  });
+  if (canGetLoan) {
+    currentAcc.movements.push(loan);
+    updateUI(currentAcc);
+    inputLoanAmount.value = '';
+  } else {
+    alert(`not enough cash!`);
+  }
+});
+
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   console.log(currentAcc);
@@ -220,22 +235,17 @@ btnClose.addEventListener('click', function (e) {
     currentAcc.username === inputCloseUsername.value &&
     currentAcc.pin === Number(inputClosePin.value)
   ) {
-    let ans = prompt(
-      `Are you sure you would like to go through with this, type "YES" to confirm`
-    );
-    if (ans === 'YES') {
-      let ind = accounts.findIndex(function () {
-        return currentAcc.username;
-      });
-      labelWelcome.textContent = `GoodBye, ${currentAcc.owner}`;
-      accounts.splice(ind, 1);
-      console.log(accounts);
-      currentAcc = '';
-      containerApp.style.opacity = 0;
-      labelWelcome.textContent = `Login to get started`;
-      inputClosePin.value = '';
-      inputCloseUsername.value = '';
-    }
+    let ind = accounts.findIndex(function () {
+      return currentAcc.username;
+    });
+    labelWelcome.textContent = `GoodBye, ${currentAcc.owner}`;
+    accounts.splice(ind, 1);
+    console.log(accounts);
+    currentAcc = '';
+    containerApp.style.opacity = 0;
+    labelWelcome.textContent = `Login to get started`;
+    inputClosePin.value = '';
+    inputCloseUsername.value = '';
   } else {
     alert('Wrong password or username, please try again!');
   }
