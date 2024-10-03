@@ -62,22 +62,25 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 containerMovements.innerHTML = '';
 
-function displayMovements(account) {
-  //movements would be an array!
+function displayMovements(movements, sort = false) {
+  containerMovements.innerHTML = '';
+  // movements would be an array
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
 
-  account.movements.forEach(function (movement, index) {
+  movs.forEach(function (movement, index) {
     let transactiontype;
     movement > 0
       ? (transactiontype = 'deposit')
       : (transactiontype = 'withdrawal');
 
     const html = `
-    <div class="movements__row">
-          <div class="movements__type movements__type--${transactiontype}">${
+      <div class="movements__row">
+        <div class="movements__type movements__type--${transactiontype}">${
       index + 1
     } ${transactiontype}</div>
-          <div class="movements__date">3 days ago</div>
-          <div class="movements__value">R${Math.abs(movement)}</div>
+        <div class="movements__date">3 days ago</div>
+        <div class="movements__value">R${Math.abs(movement)}</div>
+      </div>
     `;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -176,14 +179,14 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginPin.blur();
     inputLoginUsername.blur();
     //Movements
-    displayMovements(currentAcc);
+    displayMovements(currentAcc.movements);
     //Balances
     printBal(currentAcc);
     totalIncome(currentAcc);
   }
 });
 function updateUI(acc) {
-  displayMovements(acc);
+  displayMovements(acc.movements);
   printBal(acc);
   totalIncome(acc);
 }
@@ -249,6 +252,14 @@ btnClose.addEventListener('click', function (e) {
   } else {
     alert('Wrong password or username, please try again!');
   }
+});
+
+let sorted = false;
+
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAcc.movements, !sorted);
+  sorted = !sorted;
 });
 
 /////////////////////////////////////////////////
