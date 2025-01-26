@@ -40,6 +40,24 @@ const account2 = {
 
 const accounts = [account1, account2];
 
+function startLogoutTimer() {
+  let time = 600;
+  const timer = setInterval(function () {
+    const min = time / 60;
+    const secs = time % 60;
+    time--;
+    console.log(Math.floor(min), secs);
+    labelTimer.textContent = `${String(Math.floor(min)).padStart(
+      2,
+      0
+    )}:${String(Math.floor(secs)).padStart(2, 0)}`;
+    if (time < 0) {
+      clearInterval(timer);
+      location.reload();
+    }
+  }, 1000);
+}
+
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
@@ -83,7 +101,8 @@ function displayMovements(acc, sort = false) {
     let displayDate = new Date(acc.movementsDates[index]);
     displayDate = editDate(displayDate, false);
     displayDate = daysPassed(Date.now(), new Date(acc.movementsDates[index]));
-    if (displayDate < 1 && displayDate > -1) {
+    displayDate = Math.floor(displayDate);
+    if (displayDate == 0) {
       console.log(displayDate);
       console.log(movement);
       html = `
@@ -91,7 +110,7 @@ function displayMovements(acc, sort = false) {
         <div class="movements__type movements__type--${transactiontype}">${
         index + 1
       } ${transactiontype}</div>
-        <div class="movements__date">Today</div>
+        <div class="movements__date"> ${'TODAY'} </div>
         <div class="movements__value">R${Math.abs(movement).toFixed(2)}</div>
       </div>
     `;
@@ -279,9 +298,11 @@ btnLogin.addEventListener('click', function (e) {
     //Balances
     printBal(currentAcc);
     totalIncome(currentAcc);
+    startLogoutTimer();
   }
 });
 function updateUI(acc) {
+  startLogoutTimer();
   displayMovements(acc);
   printBal(acc);
   totalIncome(acc);
